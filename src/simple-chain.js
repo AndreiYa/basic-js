@@ -6,8 +6,7 @@ const chainMaker = {
     // remove line with error and write your code here
   },
   addLink(value) {
-    throw new CustomError('Not implemented');
-    // remove line with error and write your code here
+    let newlink = `~(${value})~`; 
   },
   removeLink(position) {
     throw new CustomError('Not implemented');
@@ -18,8 +17,7 @@ const chainMaker = {
     // remove line with error and write your code here
   },
   finishChain() {
-    throw new CustomError('Not implemented');
-    // remove line with error and write your code here
+    let lastLink = `~()~`
   }
 };
 

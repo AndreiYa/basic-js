@@ -1,43 +1,52 @@
 const CustomError = require("../extensions/custom-error");
 
 module.exports = function transform(arr) {
-  if (arr.isArr) {
-   throw new Error()
+  if (!Array.isArray(arr)) {
+    throw new Error();
   }
 
-  if (arr.length == 0) {
-    return [];
+
+  let newArr = [];
+  let arrMod = arr.slice(0);
+  let tmp = 'temp';
+
+  for (var i = 0; i < arrMod.length; i++) {
+    switch (arrMod[i]) {
+      
+      case '--discard-next':
+        arrMod[i] = tmp;
+        arrMod[i + 1] = tmp;
+        break;
+
+      case '--discard-prev':
+        arrMod[i] = tmp;
+        arrMod[i - 1] = tmp;
+        break;
+      
+      case '--double-next':
+        if (i < arrMod.length - 1) {
+          arrMod[i] = arrMod[i + 1];
+        } else {
+          arrMod[i] = tmp;
+        }
+        break;
+
+      case '--double-prev':
+        arrMod[i] = tmp;
+        if (i > 0 && arrMod[i - 1] !== tmp) {
+          arrMod[i] = arrMod[i - 1];
+        } else {
+          arrMod[i] = tmp;
+        }
+        break;
+      default:
+    }
   }
-  let newArr = arr.slice(0);
-
-
-  for (let i = 0; i < newArr.length; i++) {
-
-    if (newArr[i] == '--discard-next') {
-      newArr.splice([i], 1);
-     newArr[i] = "delio";
-      if (newArr[i + 1] == "--double-prev") {
-        newArr.splice([i], 2);
-      }
+  arrMod.forEach((item) => {
+    if (item !== tmp) {
+      newArr.push(item);
     }
+  });
 
-    if (newArr[i] == "--double-prev" || newArr[i] == "--discard-prev" && newArr[i] == newArr[0]) {
-      newArr.splice([i], 1);
-    }
-
-    if (newArr[i] == '--double-next' && i < newArr.length - 1) {
-      newArr[i] = newArr[i + 1];
-    }
-    if (newArr[i] == '--double-next' || newArr[i] == '--double-next' || newArr[i] == 'delio' && i == newArr.length - 1) {
-      newArr.splice([i], 1)
-    }
-
-    if (newArr[i] == '--double-prev' || newArr[i] == '--discard-prev' && newArr[i] != newArr[0]) {
-      newArr[i] = newArr[i - 1];
-    }
-    if (newArr[i] == '--double-prev' || newArr[i] == '--discard-prev' || newArr[i] == '--double-next' || newArr[i] == '--discard-next' && newArr[i] == newArr[0] && newArr.length == 1) {
-      return [];
-    }
-  } return newArr;
-
+  return newArr;
 };
